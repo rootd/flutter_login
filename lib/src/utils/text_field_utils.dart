@@ -8,6 +8,8 @@ class TextFieldUtils {
         return AutofillHints.username;
       case LoginUserType.phone:
         return AutofillHints.telephoneNumber;
+      case LoginUserType.birthday:
+        return AutofillHints.birthday;
       case LoginUserType.email:
       default:
         return AutofillHints.email;
@@ -20,6 +22,8 @@ class TextFieldUtils {
         return TextInputType.name;
       case LoginUserType.phone:
         return TextInputType.number;
+      case LoginUserType.birthday:
+        return TextInputType.datetime;
       case LoginUserType.email:
       default:
         return TextInputType.emailAddress;

@@ -45,6 +45,8 @@ class AnimatedTextFormField extends StatefulWidget {
     this.onSaved,
     this.autocorrect = false,
     this.autofillHints,
+    this.readOnly = false,
+    this.onTap,
   })  : assert((inertiaController == null && inertiaDirection == null) ||
             (inertiaController != null && inertiaDirection != null)),
         super(key: key);
@@ -68,6 +70,8 @@ class AnimatedTextFormField extends StatefulWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final FormFieldSetter<String>? onSaved;
   final TextFieldInertiaDirection? inertiaDirection;
+  final bool readOnly;
+  final void Function()? onTap;
 
   @override
   _AnimatedTextFormFieldState createState() => _AnimatedTextFormFieldState();
@@ -221,6 +225,10 @@ class _AnimatedTextFormFieldState extends State<AnimatedTextFormField> {
       enabled: widget.enabled,
       autocorrect: widget.autocorrect,
       autofillHints: widget.autofillHints,
+      readOnly: widget.readOnly,
+      onTap: () async {
+        widget.onTap?.call();
+      },
     );
 
     if (widget.loadingController != null) {

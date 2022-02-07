@@ -159,25 +159,71 @@ class _AdditionalSignUpCardState extends State<_AdditionalSignUpCard>
           const SizedBox(
             height: 10,
           ),
-          AnimatedTextFormField(
-            controller: _nameControllers[formField.keyName],
-            // interval: _fieldAnimationIntervals[widget.formFields.indexOf(formField)],
-            loadingController: widget.loadingController,
-            width: width,
-            labelText: formField.displayName,
-            prefixIcon:
-                formField.icon ?? const Icon(FontAwesomeIcons.solidUserCircle),
-            keyboardType: TextFieldUtils.getKeyboardType(formField.userType),
-            autofillHints: [
-              TextFieldUtils.getAutofillHints(formField.userType)
-            ],
-            textInputAction: formField.keyName == widget.formFields.last.keyName
-                ? TextInputAction.done
-                : TextInputAction.next,
-            validator: formField.fieldValidator,
-          ),
+          formField.userType == LoginUserType.birthday
+              ? AnimatedTextFormField(
+                  readOnly: true,
+                  controller: _nameControllers[formField.keyName],
+                  // interval: _fieldAnimationIntervals[widget.formFields.indexOf(formField)],
+                  loadingController: widget.loadingController,
+                  width: width,
+                  labelText: formField.displayName,
+                  prefixIcon: formField.icon ??
+                      const Icon(FontAwesomeIcons.solidUserCircle),
+                  keyboardType:
+                      TextFieldUtils.getKeyboardType(formField.userType),
+                  autofillHints: [
+                    TextFieldUtils.getAutofillHints(formField.userType)
+                  ],
+                  textInputAction:
+                      formField.keyName == widget.formFields.last.keyName
+                          ? TextInputAction.done
+                          : TextInputAction.next,
+                  validator: formField.fieldValidator,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context, initialDate: DateTime.utc(DateTime.now().year - 18, 1, 1),
+                      firstDate: DateTime(1940), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime.utc(DateTime.now().year - 18, 12, 31),
+                      cancelText: "Abbrechen",
+                      confirmText: "Bestätigen",
+                      helpText: "Geburtstag wählen",
+                  );
+                  
+                  if(pickedDate != null ){
+                      print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
+                      String formattedDate = DateFormat('dd.MM.yyyy').format(pickedDate); 
+                      print(formattedDate); //formatted date output using intl package =>  2021-03-16
+                        //you can implement different kind of Date Format here according to your requirement
+
+                      setState(() {
+                         _nameControllers[formField.keyName]?.text = formattedDate; //set output date to TextField value. 
+                      });
+                  }else{
+                      print("Date is not selected");
+                  }
+                  },
+                )
+              : AnimatedTextFormField(
+                  controller: _nameControllers[formField.keyName],
+                  // interval: _fieldAnimationIntervals[widget.formFields.indexOf(formField)],
+                  loadingController: widget.loadingController,
+                  width: width,
+                  labelText: formField.displayName,
+                  prefixIcon: formField.icon ??
+                      const Icon(FontAwesomeIcons.solidUserCircle),
+                  keyboardType:
+                      TextFieldUtils.getKeyboardType(formField.userType),
+                  autofillHints: [
+                    TextFieldUtils.getAutofillHints(formField.userType)
+                  ],
+                  textInputAction:
+                      formField.keyName == widget.formFields.last.keyName
+                          ? TextInputAction.done
+                          : TextInputAction.next,
+                  validator: formField.fieldValidator,
+                ),
           const SizedBox(
-            height: 5,
+            height: 15,
           )
         ],
       );
@@ -248,11 +294,11 @@ class _AdditionalSignUpCardState extends State<_AdditionalSignUpCard>
                     messages.additionalSignUpFormDescription,
                     key: kRecoverPasswordIntroKey,
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyText2,
+                    style: theme.textTheme.bodyText2?.copyWith(color: Colors.white),
                   ),
                 ),
                 _buildFields(textFieldWidth),
-                const SizedBox(height: 5),
+                const SizedBox(height: 6),
                 _buildSubmitButton(theme, messages),
                 _buildBackButton(theme, messages, widget.loginTheme),
               ],
